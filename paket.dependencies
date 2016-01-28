@@ -1,0 +1,13 @@
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Core
+nuget FSharp.Data
+nuget FSharp.Data.SqlClient prerelease
+
+group Build
+    source https://api.nuget.org/v3/index.json
+    nuget Fake
+	nuget Microsoft.SqlServer.Dac
+
+
+
