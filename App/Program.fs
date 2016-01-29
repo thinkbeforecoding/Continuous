@@ -4,34 +4,45 @@ open System.Configuration
 open FSharp.Data
 
 
-let [<Literal>] CnxString = "server=.\SqlExpress;database=AppData;Integrated Security=true"
+
+#if !LocalDb
+let [<Literal>]Config = "App.config"
+#else
+let [<Literal>]Config = "App.localdb.config"
+#endif
+
+//let [<Literal>] CnxString = "server=.\SqlExpress;database=AppData;Integrated Security=true"
+let [<Literal>] CnxString = "name=AppData"
 
 let [<Literal>] InsertBookQuery = """
-INSERT Book
-(Title)
+INSERT Books
+(Title, Author)
 VALUES
-(@title)
+(@title, @author)
 
 SELECT CAST(@@IDENTITY as int)
 """
 
-type InsertBookCmd = SqlCommandProvider<InsertBookQuery, CnxString, SingleRow = true>
+type InsertBookCmd = SqlCommandProvider<InsertBookQuery, CnxString , SingleRow = true, ConfigFile = Config>
 
-let insert title =
+let insert title author =
     use cmd = new InsertBookCmd()
-    cmd.Execute(title = title) |> Option.get |> Option.get
+    cmd.Execute(title = title, author = author) |> Option.get |> Option.get
 
 
 let [<Literal>] GetBookQuery = """
-SELECT * From Book
+SELECT * From Books
 WHERE Id = @id
 """
 
-type GetBookCmd = SqlCommandProvider<GetBookQuery, CnxString, SingleRow = true>
+type GetBookCmd = SqlCommandProvider<GetBookQuery, CnxString, SingleRow = true, ConfigFile = Config>
 
 let getBook id =
     use cmd = new GetBookCmd()
     cmd.Execute(id = id)
+
+type Data = JsonProvider< "../Api/Data.json", SampleIsList = true >
+
 
 [<EntryPoint>]
 let main argv = 
@@ -39,9 +50,18 @@ let main argv =
     insert "Antifragile" |> printfn "%A"
     insert "I'm a strange loop" |> printfn "%A"
 
-    getBook 1 |> Option.iter (printfn "%A")
+    getBook 1 |> Option.iter (fun b -> 
+        let author = defaultArg b.Author "Anonymous"
+        printfn "%s by %s" b.Title author)
 
     printfn "%A" argv
+
+    let b = Data.Parse """{
+    "text": "This is some json",
+    "value": 314 }"""
+
+    printfn "%s (%d)" b.Text (defaultArg b.Value 0)
+
     0 // return an integer exit code
 
 
@@ -81,11 +101,3 @@ let main argv =
 
 
 
-
-//let [<Literal>] CnxString = "name=AppData"
-//
-//#if !LocalDb
-//let [<Literal>]Config = "App.config"
-//#else
-//let [<Literal>]Config = "App.localdb.config"
-//#endif

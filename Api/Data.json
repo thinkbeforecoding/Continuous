@@ -1,4 +1,9 @@
-{
-  "text": "This is a test",
-  "value": 42
-}
+[
+  {
+    "text": "This is a test",
+    "value": 42
+  },
+  {
+    "text": "This is a test"
+  }
+]

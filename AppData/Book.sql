@@ -1,5 +1,6 @@
-﻿CREATE TABLE [dbo].[Book]
+﻿CREATE TABLE [dbo].[Books]
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
-    [Title] NVARCHAR(500) NOT NULL
+    [Title] NVARCHAR(500) NOT NULL,
+	[Author] NVARCHAR(200) NULL
 )
