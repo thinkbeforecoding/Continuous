@@ -9,7 +9,7 @@ in line by typechecking it all.
 The whole thing can then be used easily on any build server for continuous integration and continuous deployment.
 
 
-## Prerequisits
+## Prerequisites
 
 The sample use Sql Server Express for development and Sql Server local DB on the build server.
 
