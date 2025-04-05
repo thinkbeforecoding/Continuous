@@ -1,5 +1,7 @@
 # Continuous
 
+This repository has moved to Codeberg: https://codeberg.org/thinkbeforecoding/Continuous
+
 This is a sample project to demo how to get continuous integration further with F#
 
 By using SqlCommandProvider and deploying database locally, the compiler can check at compile time that
